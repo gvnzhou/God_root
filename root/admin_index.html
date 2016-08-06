@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>zc_admin</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" type="text/css" href="css/WT.white.css" />
+	<link rel="stylesheet" type="text/css" href="css/WT.css" />
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.min2.css" />
+	<link rel="stylesheet" type="text/css" href="js/kindeditor/themes/default/default.css" />
+	<style type="text/css">
+		.left_menu,.left_bc{background-color: #3D454D;color: #D6D7D9;}
+		.left_sel,.left_bc:hover{background-color: #353B41;color:#fff;}
+	</style>
+</head>
+<body>
+	<div id="index_body" class="wp f_df hp">
+		<div>
+			<div id="index_left" class="hp w160 b_w1 b_s left_menu easeWebkit pf"></div>
+		</div>
+		<div id="index_right" class="ml160 easeWebkit hp wp oa scrollbar">
+			<div id="index_head"></div>
+			<div id="index_right_con" class="pt50"></div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="js/WT.js"></script>
+<script type="text/javascript" src="js/WT-WEBAPP.js"></script>
+<script src="http://test.rtdream.com/WT-API.js"></script>
+<script type="text/javascript" src="js/WT-UI.js"></script>
+<script type="text/javascript" src="js/kindeditor/kindeditor-min.js"></script>
+<script type="text/javascript" src="js/kindeditor/lang/zh_CN.js"></script>
+<script type="text/javascript">
+	"use strict";
+	//全局变量
+	var $ = WT.$,
+		clicked = '';
+	var logoFolding = 'open';
+	var settingTips = null;//tips弹框
+	// var model = {//左侧导航动态数据 
+	// 		navs:[
+	// 		{'idx':'treeopt','name':'Tree操作','icon':'fa-dashboard'},
+	// 		{'idx':'plmission','name':'计划任务','icon':'fa-bookmark'},
+	// 		{'idx':'webvisit','name':'Web访问','icon':'fa-globe'},
+	// 		{'idx':'backmanage','name':'后台运行模块','icon':'fa-cogs'},
+	// 		{'idx':'apivisit','name':'Api访问','icon':'fa-coffee'},
+	// 		{'idx':'serverStatus','name':'服务器状态','icon':'fa-coffee'},
+	// 		{'idx':'usermanage','name':'用户管理','icon':'fa-coffee'},
+	// 		{'idx':'clientrelease','name':'客户端发布','icon':'fa-coffee'},
+	// 		{'idx':'newsStatus','name':'新闻抓取状态','icon':'fa-coffee'},
+	// 		{'idx':'newsPpl','name':'新闻分词管理','icon':'fa-coffee'},
+	// 		{'idx':'tips','name':'公告','icon':'fa-coffee'},
+	// 		{'idx':'report','name':'report操作','icon':'fa-coffee'},
+	// 		{'idx':'shell_code','name':'shellCode操作','icon':'fa-coffee'},
+	// 		{'idx':'queue_system','name':'队列系统','icon':'fa-coffee'},
+	// 		{'idx':'chat_status','name':'聊天状态','icon':'fa-coffee'},
+	// 		{'idx':'questionnaire','name':'问卷调查','icon':'fa-coffee'},
+	// 		{'idx':'upload_file','name':'上传文件','icon':'fa-coffee'}
+	// 		]
+	// 	};
+
+		var model = {//左侧导航动态数据 
+			navs:[
+			{'idx':'treeopt','icon':'fa-dashboard'},
+			{'idx':'plmission','icon':'fa-bookmark'},
+			{'idx':'webvisit','icon':'fa-globe'},
+			{'idx':'backmanage','icon':'fa-cogs'},
+			{'idx':'apivisit','icon':'fa-coffee'},
+			]
+		};
+
+	var left_nav_temp = function(){//左侧导航模版
+		/*
+			<div class="hp oa scrollbar">
+				<div opt="left_head" class="pf h50 wp pl10 pt10 pb5 f_df f_aic oh left_menu">
+					<img class="w30 h30 fl" src="imgs/login_head_logo.png"/>
+					<span class="dib ml15 h18 oh fl fs18">xxx后台</span>
+				</div>
+				<div class="pt50" style="padding-bottom:100px;">
+					<ul id="index_page_url">
+						{{# for(var i=0;i<d.navs.length;i++) { }}
+						<li class="db wp h40 tac cp oh left_bc" idx={{d.navs[i].idx}}>
+							<span class="fa {{d.navs[i].icon}} dib w25 h25 mt13 fl ml10"></span>
+							<span class="fl ml5 mt13">{{d.navs[i].name}}</span>					
+						</li>
+						{{# } }}
+					</ul>
+				</div>
+				<div opt="left_foot" class="pf wp b0 left_menu z10">
+					<div class="lh50 tac cp left_bc oh" style="font-size:36px">
+						<span class="fa fa-github"></span>
+					</div>
+					<div id="admin_shrink" class="db lh50 tac cp oh">
+						<span class="fa fa-angle-left"></span>
+					</div>
+				</div>
+			</div>
+		*/			
+	};
+
+	var admin_head_temp = function(){
+		/*
+		<div class="lh50 pl10 bc_11 b_s b_w1 b_14 z20 pf wp">				
+				{{d.name}}
+		</div>
+		*/
+	};
+	function init(){//页面代码入口
+		dataLoad();
+		//elmCreate();
+		//elmEventBind();
+	} 
+	function dataLoad(){//加载各类数据
+		$DB.style.background = '#f2f2f2';
+		getNavData();
+	}
+	function elmCreate(){//dom元素建立 
+		$('index_left').h(laytpl(left_nav_temp.help()).render(model)); //渲染左侧导航栏
+		clicked = $('index_page_url').chr(0).dc('left_bc').ac('left_sel');
+		viewLoad('treeopt.html',$('index_right_con'));
+		$('index_head').h(laytpl(admin_head_temp.help()).render({name:'tree操作'}));
+	}
+	
+	function elmEventBind() {//绑定事件
+		$('index_page_url').evt('click',loadPge);
+		$('admin_shrink').evt('click',function(){
+			if (logoFolding === 'open') {
+				$('index_left').dc('w160').ac('w50');
+				$('index_right_con').pn().dc('ml160').ac('ml50');
+				$(admin_shrink).chr(0).dc('fa-angle-left').ac('fa-angle-right');
+				logoFolding = 'close';
+			}else{
+				$('index_left').dc('w50').ac('w160');
+				$('index_right_con').pn().ac('ml160').dc('ml50');
+				$(admin_shrink).chr(0).ac('fa-angle-left').dc('fa-angle-right');
+				logoFolding = 'open';
+			}
+		});
+	}
+	init();
+	//自定义函数
+	function getNavData(){
+		WT.Tool.ajax({
+	        apiName: '/admin/menu/get',
+	        ifShowTips: false,
+	        cbFn: {
+	            onSuccess: function(d) {
+	            	d.forEach(function(item, idx){
+	            		model.navs[idx].name = item.name;
+	            	});
+	            	elmCreate();
+	            	elmEventBind();
+	            }
+	        },
+	        method: 'GET'
+	    });	
+	}
+
+	function loadPge(e){
+		var e = WT.e.fix(e),_e = e.t;
+		e.stop();
+		while(_e.tagName!='UL'){
+			if(_e.tagName==='LI'){
+				var _navStyle = _e.attr('idx');
+				if(clicked){
+					clicked.ac('left_bc').dc('left_sel');
+				}
+				_e.dc('left_bc').ac('left_sel'); 
+				switch(_navStyle){ //不同页面加载
+					case _navStyle :
+						viewLoad('zc_admin/' + _navStyle + '.html',$('index_right_con'));
+						for(var i=0; i<model.navs.length; i++){
+							if (_navStyle === model.navs[i].idx) {
+								$('index_head').h(laytpl(admin_head_temp.help()).render({name:model.navs[i].name}));
+							}
+						}
+					break;
+					default:
+						$('index_right_con').h('NO FOUND');
+						break;
+				}
+				clicked = _e;
+			}
+			_e = _e.pn();
+		}
+	}
+
+	function createTips(title,body,w,h){//创建tips弹框
+        if (settingTips) {settingTips.r(); $('tips_mask').ac('dn');}//防止连续点击搜索按钮
+        var _args = {
+                p: $DB,
+                cn: 'bg_1 c_25 b_3 b_w1 b_s fs14 p5',
+                body:'',
+                title:title,
+                w:w,h:h,
+                center:true,
+                tips_mask:true,
+                headBtn:[],
+                footBtn:[],
+                onClose: function(){settingTips.r();}
+            };
+        settingTips = new WT.UI.Tips(_args);
+        settingTips._baseHead.pn(0).cn('wp p5')
+        settingTips._baseHead.pn(0).adElm('','hr').css('height:1px;border:none;border-top:1px solid #DEDEDE;').cn('ma0 wp mt20');
+        settingTips.body.h(body);
+    }
+    	
+	function matchScript(str){//将含有script的内容替换成空
+		var reg=/<script.+?<\/script>/gi;
+		return str.replace(reg,'');
+	}
+</script>
+</html>

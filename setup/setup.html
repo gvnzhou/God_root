@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>系统安装程序</title>
+	<link rel="stylesheet" href="./setup/css/WT.css">
+</head>
+<body>
+	<div class="w300 b_10 ma0 p15 cf">
+		<h1 class="fs24">数据库配置</h1>
+		<div class="mb10">
+			<label for="host" class="w70 dib red_cash mr5" >Host:</label><input type="text" class="p3" value="{{ d.host }}" id="host">
+		</div>
+		<div class="mb10">
+			<label for="database" class="w70 dib red_cash mr5">数据库:</label><input type="text"  class="p3" value="{{ d.database }}" id="database">
+		</div>
+		<div class="mb10">
+			<label for="port" class="w70 dib red_cash mr5">端口:</label><input type="text"  class="p3" value="{{ d.port }}" id="port">
+		</div>
+		<div class="mb10">
+			<label for="user" class="w70 dib red_cash mr5">用户名:</label><input type="text" class="p3" value="{{ d.user }}" id="user">
+		</div>
+		<div class="mb10">
+			<label for="password" class="w70 dib red_cash mr5">密码:</label><input type="text"  class="p3" value="{{ d.password }}" id="password">
+		</div>
+		<button class="pl15 pr15 fr" style="margin-right: 20px;" id="setup_btn">确认</button>
+	</div>
+</body>
+<script src="./setup/js/WT.js"></script>
+<script type="text/javascript" src="./setup/js/WT-WEBAPP.js"></script>
+<script type="text/javascript" src="./setup/js/WT-UI.js"></script>
+<script>
+	'use strict';
+
+	var $ = WT.$;
+
+	function elmEventBind() {
+		$('setup_btn').evt('click',sysInit)
+	}
+
+	function init() {
+		elmEventBind();
+	}
+
+	init();
+
+	function sysInit() {
+		var data = {
+			host: $('host').val(),
+			database: $('database').val(),
+			port: $('port').val(),
+			user: $('user').val(),
+			password: $('password').val()
+		};
+		WT.Tool.ajax({
+	        apiName: '/sys/init',
+	        param: data,
+	        ifShowTips: false,
+	        cbFn: {
+	            onSuccess: function(d) {
+	            	alert(d.msg);
+	            	document.write("<div>系统初始化成功！<br><a href = '../root/admin_login.html'>进入系统后台</a></div>");
+	            }
+	        },
+	        method: 'POST'
+	    });
+	}
+
+</script>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>zc_admin</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<div id="treeopt_content">
+
+	</div>
+
+	<div id="treeopt_addElm" class="w300 pa t120 l50p b_65 bc_64 pl20 pr20 pb15 pt10 dn" >
+		<span class="fs16 z55 mb20">添加项目</span>
+		<div class="fr cp" id="close_btn">x</div>
+		<div class="mb10 mt20">
+			<label for="pro_name" class="mr10">项目名称</label><input type="text" id="pro_name">
+		</div>
+		<div>
+			<label for="pro_prefix" class="mr10">项目前缀</label><input type="text" id="pro_prefix">
+		</div>
+		<button class="fr mt10">添加</button>
+	</div>
+</div>
+</body>
+<script type="text/javascript" src="js/WT.js"></script>
+<script type="text/javascript" src="/js/WT-WEBAPP.js"></script>
+<script type="text/javascript" src="/js/WT-UI.js"></script>
+<script>
+	// 全局变量
+	var $ = WT.$;
+	var sIdName = '';
+
+	var nowLev;
+
+	function init() {
+		rootLoad();
+		elmEventBind();
+	}
+
+	function dataLoad() {
+
+	}
+
+	function elmCreate() {
+
+	}
+
+	function elmEventBind() {
+		$('close_btn').evt('click',tipClose);
+		$('treeopt_content').evt('click', function(e) {
+			if(e.target.nodeName.toLowerCase() === 'span'){
+				var id = e.target.getAttribute('data-sign');
+				gridLoad(id);
+		    }
+		    if (e.target.id === 'ctip_btn') {
+		    	// 当前层级
+		    	var level = e.target.getAttribute('data-sign');
+		    	tipCreate();
+		    }
+		    if (e.target.nodeName.toLowerCase() === 'button') {
+		    	itemAdd();
+		    }
+		});
+	}
+
+	init();
+
+
+	var grid_temp = function() {
+		/*
+		<div id="top_node" class="b_65 p10 cf c_63 mb10">
+			{{# for(var i=0;i<d.length;i++) { }}
+			<div class="b_65 fl grid cf mr10">
+				<span data-sign={{ d[i].id }} class="dib p5">{{ d[i].name }}</span>
+			</div>
+			{{# } }}
+			<button class="fr" data-sign = {{ d[0].pid }} id="ctip_btn">+</button>
+		</div>
+        */
+	}
+
+
+	var tip_temp = function() {
+		/*
+		<div id="treeopt_addElm" class="w300 pa t120 l50p b_65 bc_64 pl20 pr20 pb15 pt10 dn" >
+			<span class="fs16 z55 mb20">添加项目</span>
+			<div class="fr cp" id="close_btn">x</div>
+			<div class="mb10 mt20">
+				<label for="pro_name" class="mr10">项目名称</label><input type="text" id="pro_name">
+			</div>
+			<div>
+				<label for="pro_prefix" class="mr10">项目前缀</label><input type="text" id="pro_prefix">
+			</div>
+			<button class="fr mt10">添加</button>
+		</div>
+		*/
+	}
+
+	// 自定义函数
+	function rootLoad() {//加载根节点
+		WT.Tool.ajax({
+	        apiName: '/tree/get_son',
+	        param: {id:0},
+	        ifShowTips: false,
+	        cbFn: {
+	            onSuccess: function(d) {
+	            	console.log(d);
+	            	if (d.msg === 200) {
+	            		$('treeopt_content').h(laytpl(grid_temp.help()).render(d.data));
+	            	}
+	            }
+	        },
+	        method: 'GET'
+	    });
+	}
+
+	function gridLoad(id) {//加载分支
+		WT.Tool.ajax({
+	        apiName: '/tree/get_son',
+	        param: {id:id},
+	        ifShowTips: false,
+	        cbFn: {
+	            onSuccess: function(d) {
+	            	if(d.msg === 200) {
+	            		gridCreate(d.data);
+	            	} else {
+	            		$(sIdName).r();
+	            	}
+	            }
+	        },
+	        method: 'GET'
+	    });
+	}
+
+	function gridCreate(data) {//创建分支
+		sIdName = "root_" + data[0].pid;
+		$('treeopt_content').adElm(sIdName,"div");
+		$(sIdName).h(laytpl(grid_temp.help()).render(data));
+	}
+
+	function tipCreate() {//创建弹窗
+		
+		
+		$('treeopt_addElm').dc('dn');
+	}
+
+	function tipClose() {//关闭弹窗
+		$('treeopt_addElm').ac('dn');
+	}
+
+	function itemAdd() {//添加一个新项目或节点
+
+
+		console.log("ok");
+
+	}
+
+
+</script>
+
+</html>

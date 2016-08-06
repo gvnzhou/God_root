@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>登陆</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" type="text/css" href="css/WT.css" />
+	<link rel="stylesheet" type="text/css" href="css/WT.white.css" />
+	<style>
+		body{background: none;}
+		.h127{height: 127px;}
+		.h85{height: 85px;}
+		.h228{height: 228px;}
+		.h72{height: 72px;}
+		.w72{width: 72px;}
+		.br4{border-radius: 4px;}
+		.bg_img{background: url(imgs/login_bg2.png);background-color: #2681dc;background-repeat: no-repeat;background-position: -1px 3px;border-radius: 4px 4px 0 0;margin-top: 22px;height: 113px;}
+		.login_img{width: 16px;height: 16px;margin-left: 10px;margin-top: 4px;}
+		.login_opt_img{width: 12px;height: 12px;}
+		.login_choice{font-size: 12px;color: #5f9ad6;padding-top: 10px;}
+		.login_logo_wrap{left: 29px;top: -1px;width: 75px;height: 75px;background: white;border-radius: 56px;}
+		.logo_hat{width: 110px;height: 110px;background: #2681dc;position: absolute;top: -21px;left: 12px;border-radius: 100px;z-index: -1;}
+		.login_logo_pos{position: absolute;left: 17px;top: 15px;width: 45px;}
+		.login_form{height: 130px;padding-left: 35px;padding-top: 10px;border-radius: 0 0 4px 4px;}
+		.login_input{border-radius: 4px; width: 233px;}
+		.login_input input{border: none;height: 26px;width: 140px;font-size: 12px;}
+		.login_name_circle{position: absolute;display: inline-block;width: 15px;height: 22px;border-left: 1px solid #dcdcdc;border-top: 1px solid #dcdcdc;
+    		top: 19px;left: 254px;border-radius: 49px 0 0 0;background: white;}
+    	.login_pwd_circle{position: absolute;display: inline-block;width: 15px;height: 22px;border-left: 1px solid #dcdcdc;border-bottom: 1px solid #dcdcdc;
+    		top: 46px;left: 254px;border-radius: 0 0px 0 40px;background: white;}
+    	.login_btn{border-radius: 40px;top: 19px;left: 260px;background-color:#2681dc; }
+    	.login_btn_img{left: 8px;top: 7px;}
+    	.login_run_title{left: 120px;top: 40px;font-size: 19px;}
+    	.login_checkbox{margin-top: -1px;float: left;margin-right: 2px;}
+	</style>
+</head>
+<body>
+	<div id="login_container" class="oh window_drag">
+		<div class="w350 h228 br4 pr mt15  ma0">
+			<div class="bg_img">
+				<div class="login_run_title c_10 pa">
+					<span>XX后台</span>
+				</div>
+			</div>
+			<div id="login_form" class="pr login_form bc_10">
+				<div>
+					<span class="login_input dib b_w1 b_13 b_s">
+						<img class="login_img" src="imgs/user.png" alt="" />
+						<input class="w150 window_no_drag" id="login_user_name" placeholder="请输入用户名" type="text" tabindex="1">
+					</span>
+					<span class="login_name_circle"></span>
+				</div>
+				<div class="mt5">
+					<span class="login_input dib b_w1 b_13 b_s">
+						<img class="login_img" src="imgs/p.png" alt="" />
+						<input class="w150 window_no_drag" id="login_user_pwd" placeholder="请输入密码" type="password" tabindex="2">
+					</span>
+					<span class="login_pwd_circle"></span>
+					<span class="fs12 ml10 dn">
+						<a href="javascript:">忘记密码</a>
+					</span>
+				</div>
+				<button id="login_btn" class="btn pa w50 h50 login_btn window_no_drag">
+					<img src="imgs/login_btn_img.png" class="window_no_drag" style="width: 30px;height: 30px;">
+				</button>
+
+				<button id="cancel_login_btn" class="btn pa w50 h50 login_btn c_10 window_no_drag" style="display: none;">
+					取消
+				</button>
+
+				
+				<div class="fs12 c_41 mt5">
+					<span id="login_msg" class="fl mt2 mb10"></span>
+					<a href="" id="a"></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="js/WT.js"></script>
+<script type="text/javascript" src="js/WT-WEBAPP.js"></script>
+<script src="http://test.rtdream.com/WT-API.js"></script>
+<script type="text/javascript" src="js/WT-UI.js"></script>
+
+<script type="text/javascript">
+  /*global WT*/
+  /*global $$*/
+  /*global $D*/
+  /*global $DB*/
+  /*global laytpl*/
+  /*global loadingShow*/
+  /*global loadingHide*/
+  /*global showTips*/
+  /*global viewLoad*/
+  /*global KindEditor*/
+	"use strict";
+	//全局变量
+	var $ = WT.$;
+
+	function init(){//页面代码入口
+		dataLoad();
+		elmCreate();
+		elmEventBind();
+	}
+	function dataLoad(){//加载各类数据
+
+	}
+	function elmCreate(){//dom元素建立
+	}
+
+	function elmEventBind() {//绑定事件
+		$('login_btn').evt('click',login);
+	}
+
+	init();
+
+	//自定义函数
+	function login(){
+		
+		var data = {
+			name: $('login_user_name').val(),
+			pwd: $('login_user_pwd').val()
+		};
+
+		console.log(data);
+
+		WT.Tool.ajax({
+	        apiName: '/admin/login',
+	        param: data,
+	        ifShowTips: false,
+	        cbFn: {
+	            onSuccess: function(d) {
+	            	console.log(d.code);
+	            	if (d.code === 200) {
+	            		$('login_msg').h(d.msg);
+	            		location.href = "admin_index.html";
+	            	}else if(d.code === 404) {
+	            		$('login_msg').h(d.msg);
+	            	}else if(d.code === 405) {
+	            		$('login_msg').h(d.msg);
+	            	}
+	            }
+	        },
+	        method: 'POST'
+	    });
+
+	}
+
+
+	
+</script>
+</html>
