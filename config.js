@@ -12,7 +12,7 @@ var configObj = {
 			    port : 3306 ,
 			    database : 'rt_root',
 			    user: 'root',
-			    password : '123456',
+			    password : '',
 			    multipleStatements: true
 			}
 		}

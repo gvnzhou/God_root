@@ -2,10 +2,22 @@
 var mysql = require('./mysql_test');
 var config = require('../config');
 var sqlInit = require('./sqlinit');
+var cofs = require('co-fs');
+var path = require('path');
 
+// 存放文件夹名字
+var arrFolder = [`../root/css`,`../root/js`,`../root/imgs`,`../root/fonts`,`../root`];
 
-// 初始化file
+// 生成root文件夹和文件
+function* genFolderAndFile() {
+    console.log("Migrations: Generating folders and files...");
+    arrFolder.forEach(function (item, idx) {
+       cofs.mkdir(path.join(__dirname, item));
+    })
+    console.log("Migrations: Generated success!");
+}
 
+// 初始化文件数据
 
 
 // 初始化数据表数据
@@ -16,6 +28,7 @@ function* initDBTableData() {
 		// console.log(res);
 		if (res[0]) {
 			console.log("Migrations: Init Success!");
+            yield genFolderAndFile();
 		}
 	} catch (e) {
 		console.log(e.toString());

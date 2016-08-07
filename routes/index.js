@@ -14,21 +14,18 @@ router
   // 系统安装界面
   .get('/setup', function *(next) {
     let _f = yield cofs.readFile(`${__dirname}/../setup/setup.html`, 'utf-8');
-  	let data = config.root.mysql;
-  	this.set('Content-Type', 'text/html; charset=utf-8;');
-	this.body = laytpl(_f).render(data);
+    let data = config.root.mysql;
+    this.set('Content-Type', 'text/html; charset=utf-8;');
+    this.body = laytpl(_f).render(data);
   })
   // 初始化系统
   .post('/sys/init',koaBody, function *(next) {
   	try {
-  		config.root.mysql = __.extend(config.root.mysql,this.request.body);
-  		yield server();
-
-  		
-
-	  	this.body = {
-	  		msg:'System is initing'
-	  	};
+        config.root.mysql = __.extend(config.root.mysql,this.request.body);
+        yield server();
+        this.body = {
+            msg:'System is initing'
+        };
   	} catch(e) {
   		console.log(e.toString());
   	}
